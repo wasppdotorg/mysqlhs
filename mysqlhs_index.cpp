@@ -6,13 +6,18 @@
 namespace mysqlhs
 {
 
-	class connection;
-
 	index::index(connection* conn, const std::string& db, const std::string& table, const std::string& index_name, const std::string& columns)
 		: conn_(conn), index_id_(conn_->new_index_id())
 	{
 		conn_->clear_();
 		*conn_ << "P\t" << index_id_ << "\t" << db << "\t" << table << "\t" << index_name << "\t" << columns << "\n";
+
+		boost::split(columns_, columns, boost::is_any_of(","));
+	}
+
+	index::~index()
+	{
+
 	}
 
 	bool index::open_()

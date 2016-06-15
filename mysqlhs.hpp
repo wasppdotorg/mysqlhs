@@ -1,12 +1,13 @@
 
-#ifndef mysqlhs_index_hpp
-#define mysqlhs_index_hpp
+#ifndef mysqlhs_hpp
+#define mysqlhs_hpp
 
 #include <cstdint>
 
 #include <iostream>
 #include <vector>
 #include <string>
+#include <unordered_map>
 
 #include <boost/asio.hpp>
 #include <boost/algorithm/string.hpp>
@@ -69,6 +70,10 @@ namespace mysqlhs
 	{
 	public:
 		index(connection* conn, const std::string& db, const std::string& table, const std::string& index_name, const std::string& columns);
+		~index();
+
+		connection* conn() { return conn_; }
+		const std::vector<std::string>& columns() { return columns_; }
 
 		bool open_();
 
@@ -124,22 +129,43 @@ namespace mysqlhs
 			return true;
 		}
 
-		const std::string& raw_data()
-		{
-			return conn_->raw_data();
-		}
+	private:
+		connection* conn_;
+		std::size_t index_id_;
+		std::vector<std::string> columns_;
 
-		int affected_rows()
+	};
+
+	class result
+	{
+	public:
+		result(index* idx);
+		~result();
+
+		void test();
+		bool fetch();
+
+		template<typename T>
+		T get(const std::string& name)
 		{
-			return conn_->affected_rows();
+			T value;
+			if (!row_[name].empty())
+			{
+				value = boost::lexical_cast<T>(row_[name]);
+			}
+
+			return value;
 		}
 
 	private:
-		connection* conn_;
-		int index_id_;
+		index* idx_;
+		std::size_t i, data_size_, column_size_;
+		std::vector<std::string> data_;
+		const std::vector<std::string>& columns_;
+		std::unordered_map<std::string, std::string> row_;
 
 	};
 
 } // mysqlhs
 
-#endif // mysqlhs_index_hpp
+#endif // mysqlhs_hpp

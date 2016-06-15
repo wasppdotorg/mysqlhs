@@ -4,8 +4,6 @@
 namespace mysqlhs
 {
 
-	class index;
-
 	connection::connection(const std::string& host, const std::string& port)
 		: socket_(io_service_), req_stream(&req_buf), res_stream(&res_buf), index_id_(0), query_type_(query_type::none_)
 	{

@@ -24,25 +24,52 @@ int main()
 		insert_data.push_back("Star wars");
 	}
 
-	bool result = false;
+	bool ret = false;
 	for (int i = 0; i < 10; ++i)
 	{
-		result = idx.insert_(insert_data);
-		if (!result)
+		ret = idx.insert_(insert_data);
+		if (!ret)
 		{
 			std::cout << "failed to insert" << std::endl;
 		}
-		std::cout << "insert : " << idx.raw_data() << std::endl;
+		std::cout << "insert : " << ret << std::endl;
 		std::cout << "-----------------------" << std::endl;
 	}
 
-	result = idx.select_where_index('>', 0, 10, 0);
-	if (!result)
+	ret = idx.select_where_index('>', 0, 10, 0);
+	if (!ret)
 	{
 		std::cout << "failed to select" << std::endl;
 	}
-	std::cout << "select : " << idx.raw_data() << std::endl;
+	std::cout << "select : " << ret << std::endl;
 	std::cout << "-----------------------" << std::endl;
+
+	mysqlhs::result rs(&idx);
+
+	rs.test();
+	rs.test();
+	rs.test();
+	rs.test();
+	rs.test();
+	rs.test();
+
+	/*
+	std::cout << "_" << std::endl;
+
+	std::size_t a = 0;
+	while (rs.fetch())
+	{
+		if (++a > 10)
+		{
+			std::cout << "a" << std::endl;
+			break;
+		}
+
+		std::cout << rs.get<std::string>("genre") << std::endl;
+	}
+
+	std::cout << "_" << std::endl;
+	*/
 
 	std::vector<std::string> update_data;
 	{
@@ -53,20 +80,19 @@ int main()
 	}
 
 	idx.update_where_index('=', 10, update_data);
-	if (!result)
+	if (!ret)
 	{
 		std::cout << "failed to update" << std::endl;
 	}
-	std::cout << "update : " << idx.affected_rows() << std::endl;
-	std::cout << "-----------------------" << std::endl;
+	std::cout << "update : " << idx.conn()->affected_rows() << std::endl;
 
 	idx.delete_where_index('=', 9);
-	if (!result)
+	if (!ret)
 	{
 		std::cout << "failed to delete" << std::endl;
 	}
-	std::cout << "delete : " << idx.affected_rows() << std::endl;
+	std::cout << "delete : " << idx.conn()->affected_rows() << std::endl;
 	std::cout << "-----------------------" << std::endl;
 
-    return 0;
+	return 0;
 }

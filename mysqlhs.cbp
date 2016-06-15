@@ -39,6 +39,7 @@
 		<Unit filename="mysqlhs.hpp" />
 		<Unit filename="mysqlhs_connection.cpp" />
 		<Unit filename="mysqlhs_index.cpp" />
+		<Unit filename="mysqlhs_result.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />
