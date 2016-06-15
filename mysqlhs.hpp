@@ -35,7 +35,8 @@ namespace mysqlhs
 
 		bool query(query_type type_);
 		bool is_okay();
-		const std::string& data();
+
+		const std::string& raw_data();
 		int affected_rows();
 
 	private:
@@ -48,8 +49,9 @@ namespace mysqlhs
 
 		int index_id_;
 		query_type query_type_;
+		std::string raw_data_;
+
 		std::ostringstream oss;
-		std::string data_;
 
 	};
 
@@ -122,9 +124,9 @@ namespace mysqlhs
 			return true;
 		}
 
-		const std::string& data()
+		const std::string& raw_data()
 		{
-			return conn_->data();
+			return conn_->raw_data();
 		}
 
 		int affected_rows()

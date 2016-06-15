@@ -1,5 +1,5 @@
 
-#include "mysqlhs_index.hpp"
+#include "mysqlhs.hpp"
 
 namespace mysqlhs
 {
@@ -44,25 +44,25 @@ namespace mysqlhs
 		boost::asio::read(socket_, res_buf, boost::asio::transfer_at_least(1), error);
 		if (error)
 		{
-			data_ = "1\n";
+			raw_data_ = "1\n";
 			return false;
 		}
 
 		clear_();
 		oss << &res_buf;
-		data_ = oss.str();
+		raw_data_ = oss.str();
 
 		return true;
 	}
 
 	bool connection::is_okay()
 	{
-		return (data_[0] == '0');
+		return (raw_data_[0] == '0');
 	}
 
-	const std::string& connection::data()
+	const std::string& connection::raw_data()
 	{
-		return data_;
+		return raw_data_;
 	}
 
 	int connection::affected_rows()
@@ -72,12 +72,12 @@ namespace mysqlhs
 			return -1;
 		}
 
-		if (data_.size() < 2)
+		if (raw_data_.size() < 2)
 		{
 			return -1;
 		}
 
-		return boost::lexical_cast<int>(data_[data_.size() - 2]);
+		return boost::lexical_cast<int>(raw_data_[raw_data_.size() - 2]);
 	}
 
 } // namespace mysqlhs

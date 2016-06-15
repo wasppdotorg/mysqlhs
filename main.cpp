@@ -4,8 +4,7 @@
 #include <string>
 #include <iostream>
 
-#include "mysqlhs_index.hpp"
-#include "mysqlhs_result.hpp"
+#include "mysqlhs.hpp"
 
 int main()
 {
@@ -33,16 +32,16 @@ int main()
 		{
 			std::cout << "failed to insert" << std::endl;
 		}
-		std::cout << "insert : " << idx.data() << std::endl;
+		std::cout << "insert : " << idx.raw_data() << std::endl;
 		std::cout << "-----------------------" << std::endl;
 	}
 
-	result = idx.select_where_index('=', 10);
+	result = idx.select_where_index('>', 0, 10, 0);
 	if (!result)
 	{
 		std::cout << "failed to select" << std::endl;
 	}
-	std::cout << "select : " << idx.data() << std::endl;
+	std::cout << "select : " << idx.raw_data() << std::endl;
 	std::cout << "-----------------------" << std::endl;
 
 	std::vector<std::string> update_data;

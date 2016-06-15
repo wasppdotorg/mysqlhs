@@ -1,7 +1,7 @@
 
 #include <boost/algorithm/string/join.hpp>
 
-#include "mysqlhs_index.hpp"
+#include "mysqlhs.hpp"
 
 namespace mysqlhs
 {
