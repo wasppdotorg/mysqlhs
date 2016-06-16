@@ -142,13 +142,13 @@ namespace mysqlhs
 		result(index* idx);
 		~result();
 
-		void test();
+		std::size_t num_rows();
 		bool fetch();
 
 		template<typename T>
 		T get(const std::string& name)
 		{
-			T value;
+			T value = T();
 			if (!row_[name].empty())
 			{
 				value = boost::lexical_cast<T>(row_[name]);
@@ -157,9 +157,14 @@ namespace mysqlhs
 			return value;
 		}
 
+		const std::string& get_str(const std::string& name)
+		{
+			return row_[name];
+		}
+
 	private:
 		index* idx_;
-		std::size_t i, data_size_, column_size_;
+		std::size_t i;
 		std::vector<std::string> data_;
 		const std::vector<std::string>& columns_;
 		std::unordered_map<std::string, std::string> row_;

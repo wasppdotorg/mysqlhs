@@ -49,6 +49,7 @@ namespace mysqlhs
 		clear_();
 		oss << &res_buf;
 		raw_data_ = oss.str();
+		raw_data_.pop_back(); // trim
 
 		return true;
 	}
@@ -70,12 +71,12 @@ namespace mysqlhs
 			return -1;
 		}
 
-		if (raw_data_.size() < 2)
+		if (raw_data_.size() < 1)
 		{
 			return -1;
 		}
 
-		return boost::lexical_cast<int>(raw_data_[raw_data_.size() - 2]);
+		return boost::lexical_cast<int>(raw_data_[raw_data_.size() - 1]);
 	}
 
 } // namespace mysqlhs

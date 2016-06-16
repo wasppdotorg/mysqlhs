@@ -33,7 +33,6 @@ int main()
 			std::cout << "failed to insert" << std::endl;
 		}
 		std::cout << "insert : " << ret << std::endl;
-		std::cout << "-----------------------" << std::endl;
 	}
 
 	ret = idx.select_where_index('>', 0, 10, 0);
@@ -42,34 +41,18 @@ int main()
 		std::cout << "failed to select" << std::endl;
 	}
 	std::cout << "select : " << ret << std::endl;
-	std::cout << "-----------------------" << std::endl;
 
 	mysqlhs::result rs(&idx);
+	std::cout << "num_rows : " << rs.num_rows() << std::endl;
 
-	rs.test();
-	rs.test();
-	rs.test();
-	rs.test();
-	rs.test();
-	rs.test();
-
-	/*
-	std::cout << "_" << std::endl;
-
-	std::size_t a = 0;
 	while (rs.fetch())
 	{
-		if (++a > 10)
-		{
-			std::cout << "a" << std::endl;
-			break;
-		}
-
-		std::cout << rs.get<std::string>("genre") << std::endl;
+		std::cout << rs.get<int>("id") << std::endl;
+		std::cout << rs.get_str("genre") << std::endl;
+		std::cout << rs.get_str("title") << std::endl;
+		std::cout << rs.get<int>("view_count") << std::endl;
+		std::cout << std::endl;
 	}
-
-	std::cout << "_" << std::endl;
-	*/
 
 	std::vector<std::string> update_data;
 	{
