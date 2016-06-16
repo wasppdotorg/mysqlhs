@@ -9,9 +9,11 @@
 int main()
 {
 	mysqlhs::connection c("127.0.0.1", "9999");
-
 	mysqlhs::index idx(&c, "test", "movie", "PRIMARY", "id,genre,title,view_count");
-	if (!idx.open_())
+
+	bool ret = false;
+	ret = idx.open_();
+	if (!ret)
 	{
 		std::cout << "failed to open index" << std::endl;
 		return 1;
@@ -24,7 +26,6 @@ int main()
 		insert_data.push_back("Star wars");
 	}
 
-	bool ret = false;
 	for (int i = 0; i < 10; ++i)
 	{
 		ret = idx.insert_(insert_data);
@@ -62,14 +63,14 @@ int main()
 		update_data.push_back("101");
 	}
 
-	idx.update_where_index('=', 10, update_data);
+	ret = idx.update_where_index('=', 10, update_data);
 	if (!ret)
 	{
 		std::cout << "failed to update" << std::endl;
 	}
 	std::cout << "update : " << idx.conn()->affected_rows() << std::endl;
 
-	idx.delete_where_index('=', 9);
+	ret = idx.delete_where_index('=', 9);
 	if (!ret)
 	{
 		std::cout << "failed to delete" << std::endl;
