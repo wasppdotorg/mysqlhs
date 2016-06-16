@@ -23,6 +23,7 @@ namespace mysqlhs
 
 	connection::~connection()
 	{
+		socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both, error);
 		socket_.close();
 	}
 
