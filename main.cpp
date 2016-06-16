@@ -76,7 +76,6 @@ int main()
 		std::cout << "failed to delete" << std::endl;
 	}
 	std::cout << "delete : " << idx.conn()->affected_rows() << std::endl;
-	std::cout << "-----------------------" << std::endl;
 
 	return 0;
 }
