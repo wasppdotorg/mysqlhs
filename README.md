@@ -40,8 +40,12 @@ handlersocket_port_wr = 9999
 * SHOW PROCESSLIST;
 * exit
 
+Install Boost Libraries
+-----------------------
+* sudo apt-get install libboost-all-dev
+
 Install mysqlhs
--------------
+---------------
 * sudo apt-get install git
 * git clone https://github.com/wasppdotorg/mysqlhs.git
 * cd mysqhs
