@@ -3,9 +3,11 @@
   <Project Name="mysqlhs" Path="mysqlhs.project" Active="Yes"/>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Debug" Selected="yes">
+      <Environment/>
       <Project Name="mysqlhs" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release" Selected="no">
+      <Environment/>
       <Project Name="mysqlhs" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
