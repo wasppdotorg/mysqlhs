@@ -22,11 +22,11 @@ int main()
 		}
 
 		std::vector<std::string> insert_data;
-		{
+		//{
 			insert_data.push_back("0");
 			insert_data.push_back("Sci-Fi");
 			insert_data.push_back("Star wars");
-		}
+		//}
 
 		for (int i = 0; i < 10; ++i)
 		{
@@ -58,12 +58,12 @@ int main()
 		}
 
 		std::vector<std::string> update_data;
-		{
+		//{
 			update_data.push_back("11");
 			update_data.push_back("Sci-Fi updated");
 			update_data.push_back("Star wars updated");
 			update_data.push_back("101");
-		}
+		//}
 
 		ret = idx.update_where_index('=', 10, update_data);
 		if (!ret)
