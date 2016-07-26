@@ -4,9 +4,8 @@ mysqlhs
 
 Build Environment
 -----------------
-* GCC 4.9 - Debian 8
+* GCC 4.9 - Debian 8.5
 * Clang 3.4 - FreeBSD 10.2
-* Visual Studio 2013 - Windows 7
 
 Install MariaDB
 ---------------
@@ -53,8 +52,8 @@ Install mysqlhs
 * cd mysqhs
 * sudo apt-get install build-essential
 * sudo apt-get install cmake
-* mkdir cmakebuild
-* cd cmakebuild
+* mkdir cmake_build
+* cd cmake_build
 * cmake ..
 * make
 
