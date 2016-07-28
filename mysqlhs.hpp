@@ -163,7 +163,6 @@ namespace mysqlhs
 		}
 
 	private:
-		index* idx_;
 		std::size_t i;
 		std::vector<std::string> data_;
 		const std::vector<std::string>& columns_;

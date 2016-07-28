@@ -5,7 +5,7 @@ namespace mysqlhs
 {
 
 	result::result(index* idx)
-		: idx_(idx), i(2), columns_(idx->columns())
+		: i(2), columns_(idx->columns())
 	{
 		boost::split(data_, idx->conn()->raw_data(), boost::is_any_of("\t"));
 
