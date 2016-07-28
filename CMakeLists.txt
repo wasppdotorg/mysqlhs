@@ -12,9 +12,7 @@ include_directories (/usr/include /usr/local/include)
 find_package (Boost 1.55.0 COMPONENTS system)
 find_library (PThread_LIBRARIES NAMES pthread)
 
-find_package (Threads)
-
-if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+if (CMAKE_CXX_COMPILER_ID MATCHES Clang)
 	set (CMAKE_COMPILER_IS_CLANGCXX 1)
 endif()
 
