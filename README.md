@@ -9,11 +9,28 @@ Build Environment
 
 Install MariaDB
 ---------------
+* sudo apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8
+* sudo nano /etc/apt/sources.list
+```
+# http://downloads.mariadb.org/mariadb/repositories/
+deb [arch=amd64,i386] http://ftp.kaist.ac.kr/mariadb/repo/10.1/ubuntu xenial main
+deb-src http://ftp.kaist.ac.kr/mariadb/repo/10.1/ubuntu xenial main
+```
+
 * sudo apt-get update
 * sudo apt-get upgrade
 * sudo apt-get install mariadb-server
-* sudo /etc/init.d/mysql restart
-* sudo mysql -u root -p
+* sudo /etc/init.d/mysql stop
+* sudo /usr/bin/mysqld_safe --skip-grant-tables &
+* mysql -u root
+```
+update mysql.user set plugin='mysql_native_password';
+quit;
+```
+ 
+* sudo kill -9 $(pgrep mysql)
+* sudo /etc/init.d/mysql start
+* mysql -u root -p
 ```
 create database test default character set utf8 default collate utf8_general_ci;
 create table movie (id int not null auto_increment primary key, genre varchar(20) not null, title varchar(100) not null, view_count int default 0, key(genre)) engine innodb;
@@ -33,11 +50,11 @@ handlersocket_port = 9998
 handlersocket_port_wr = 9999
 ```
 
-* sudo mysql -u root -p
+* mysql -u root -p
 * INSTALL PLUGIN handlersocket SONAME 'handlersocket.so';
 * exit
 * sudo /etc/init.d/mysql restart
-* sudo mysql -u root -p
+* mysql -u root -p
 * SHOW PROCESSLIST;
 * exit
 
