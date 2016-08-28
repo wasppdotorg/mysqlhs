@@ -1,3 +1,9 @@
+/*
+Copyright (c) 2016-present WASPP (waspp.org at gmail dot com)
+
+Distributed under the Boost Software License, Version 1.0.
+http://www.boost.org/LICENSE_1_0.txt
+*/
 
 #ifndef mysqlhs_hpp
 #define mysqlhs_hpp
@@ -25,7 +31,7 @@ namespace mysqlhs
 		~connection();
 
 		int new_index_id() { return ++index_id_; }
-		void clear_();
+		void clear();
 
 		template<typename T>
 		std::ostringstream& operator<<(T v)
@@ -75,14 +81,14 @@ namespace mysqlhs
 		connection* conn() { return conn_; }
 		const std::vector<std::string>& columns() { return columns_; }
 
-		bool open_();
+		bool open();
 
 		//idx,cond,vlen,val,lmt,offs
 		// "1	=	1	10	1	0\n"
 		template<typename T>
 		bool select_where_index(char condition, T value, int limit = 1, int offset = 0)
 		{
-			conn_->clear_();
+			conn_->clear();
 			*conn_ << index_id_ << "\t" << condition << "\t1\t" << value << "\t" << limit << "\t" << offset << "\n";
 
 			if (!conn_->query(query_type::select_) || !conn_->is_okay())
@@ -95,14 +101,14 @@ namespace mysqlhs
 
 		//idx,cmd,vlen,	v1,	v2,		v3
 		// "1	+	3	0	Sci-Fi	Star wars\n"
-		bool insert_(const std::vector<std::string>& params);
+		bool insert(const std::vector<std::string>& params);
 
 		//idx,cond,vlen,val,lmt,off,cmd,v1, v2,		v3,			v4
 		// "1	=	1	10	1	0	U	11	Sci-Fi	Star Wars	101\n"
 		template<typename T>
 		bool update_where_index(char condition, T value, const std::vector<std::string>& params)
 		{
-			conn_->clear_();
+			conn_->clear();
 			*conn_ << index_id_ << "\t" << condition << "\t1\t" << value << "\t1\t0\tU\t" << boost::algorithm::join(params, "\t") << "\n";
 
 			if (!conn_->query(query_type::update_) || !conn_->is_okay())
@@ -118,7 +124,7 @@ namespace mysqlhs
 		template<typename T>
 		bool delete_where_index(char condition, T value)
 		{
-			conn_->clear_();
+			conn_->clear();
 			*conn_ << index_id_ << "\t" << condition << "\t1\t" << value << "\t1\t0\tD\n";
 
 			if (!conn_->query(query_type::delete_) || !conn_->is_okay())

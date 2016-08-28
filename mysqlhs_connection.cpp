@@ -1,3 +1,9 @@
+/*
+Copyright (c) 2016-present WASPP (waspp.org at gmail dot com)
+
+Distributed under the Boost Software License, Version 1.0.
+http://www.boost.org/LICENSE_1_0.txt
+*/
 
 #include "mysqlhs.hpp"
 
@@ -27,7 +33,7 @@ namespace mysqlhs
 		socket_.close();
 	}
 
-	void connection::clear_()
+	void connection::clear()
 	{
 		oss.str(std::string());
 		oss.clear();
@@ -47,7 +53,7 @@ namespace mysqlhs
 			return false;
 		}
 
-		clear_();
+		clear();
 		oss << &res_buf;
 		raw_data_ = oss.str();
 		raw_data_.pop_back(); // trim

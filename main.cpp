@@ -1,3 +1,9 @@
+/*
+Copyright (c) 2016-present WASPP (waspp.org at gmail dot com)
+
+Distributed under the Boost Software License, Version 1.0.
+http://www.boost.org/LICENSE_1_0.txt
+*/
 
 #include <memory>
 #include <vector>
@@ -14,7 +20,7 @@ int main()
 		mysqlhs::index idx(&c, "test", "movie", "PRIMARY", "id,genre,title,view_count");
 
 		bool ret = false;
-		ret = idx.open_();
+		ret = idx.open();
 		if (!ret)
 		{
 			std::cout << "failed to open index" << std::endl;
@@ -30,7 +36,7 @@ int main()
 
 		for (int i = 0; i < 10; ++i)
 		{
-			ret = idx.insert_(insert_data);
+			ret = idx.insert(insert_data);
 			if (!ret)
 			{
 				std::cout << "failed to insert" << std::endl;
