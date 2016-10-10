@@ -5,7 +5,6 @@ mysqlhs
 Build Environment
 -----------------
 * GCC 5.4 - Ubuntu 16.04 LTS (Boost 1.58)
-* Clang 3.4 - FreeBSD 10.3 (Boost 1.55)
 
 Install MariaDB
 ---------------
