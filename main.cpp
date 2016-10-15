@@ -16,11 +16,10 @@ int main()
 {
 	try
 	{
-		mysqlhs::connection c("127.0.0.1", "9999");
-		mysqlhs::index idx(&c, "test", "movie", "PRIMARY", "id,genre,title,view_count");
+		mysqlhs::connection c("127.0.0.1", 9999);
+		mysqlhs::index movie(&c, "test", "movie", "PRIMARY", "id,genre,title,view_count");
 
-		bool ret = false;
-		ret = idx.open();
+		bool ret = movie.open();
 		if (!ret)
 		{
 			std::cout << "failed to open index" << std::endl;
@@ -36,7 +35,7 @@ int main()
 
 		for (int i = 0; i < 10; ++i)
 		{
-			ret = idx.insert(insert_data);
+			ret = movie.insert(insert_data);
 			if (!ret)
 			{
 				std::cout << "failed to insert" << std::endl;
@@ -44,14 +43,14 @@ int main()
 			std::cout << "insert : " << ret << std::endl;
 		}
 
-		ret = idx.select_where_index('>', 0, 10, 0);
+		ret = movie.select_where_index('>', 0, 10, 0);
 		if (!ret)
 		{
 			std::cout << "failed to select" << std::endl;
 		}
 		std::cout << "select : " << ret << std::endl;
 
-		mysqlhs::result rs(&idx);
+		mysqlhs::result rs(&movie);
 		std::cout << "num_rows : " << rs.num_rows() << std::endl;
 
 		while (rs.fetch())
@@ -71,24 +70,25 @@ int main()
 			update_data.push_back("101");
 		//
 
-		ret = idx.update_where_index('=', 10, update_data);
+		ret = movie.update_where_index('=', 10, update_data);
 		if (!ret)
 		{
 			std::cout << "failed to update" << std::endl;
 		}
-		std::cout << "update : " << idx.conn()->affected_rows() << std::endl;
+		std::cout << "update : " << movie.conn()->affected_rows() << std::endl;
 
-		ret = idx.delete_where_index('=', 9);
+		ret = movie.delete_where_index('=', 9);
 		if (!ret)
 		{
 			std::cout << "failed to delete" << std::endl;
 		}
-		std::cout << "delete : " << idx.conn()->affected_rows() << std::endl;
+		std::cout << "delete : " << movie.conn()->affected_rows() << std::endl;
 	}
 	catch (std::exception& e)
 	{
 		std::cout << e.what() << std::endl;
 	}
 
+	std::cin.get();
 	return 0;
 }

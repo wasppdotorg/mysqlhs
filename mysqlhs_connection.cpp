@@ -10,27 +10,19 @@ http://www.boost.org/LICENSE_1_0.txt
 namespace mysqlhs
 {
 
-	connection::connection(const std::string& host, const std::string& port)
-		: socket_(io_service_), req_stream(&req_buf), res_stream(&res_buf), index_id_(0), query_type_(query_type::none_)
+	connection::connection(const std::string& host, int port)
+		: index_id_(0), query_type_(query_type::none_)
 	{
-		try
+		mysqlhs_ = mysqlhs_connect(host.c_str(), port);
+		if (mysqlhs_ == NULL || mysqlhs_->result != MYSQL_HS_OK)
 		{
-			boost::asio::ip::tcp::resolver resolver_(io_service_);
-			boost::asio::ip::tcp::resolver::query query_(host, port);
-			boost::asio::ip::tcp::resolver::iterator endpoint_iterator = resolver_.resolve(query_);
-
-			boost::asio::connect(socket_, endpoint_iterator);
-		}
-		catch (...)
-		{
-			throw;
+			throw std::runtime_error("mysqlhs_connect failed");
 		}
 	}
 
 	connection::~connection()
 	{
-		socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both, error);
-		socket_.close();
+		mysqlhs_close(mysqlhs_);
 	}
 
 	void connection::clear()
@@ -43,19 +35,15 @@ namespace mysqlhs
 	{
 		query_type_ = type_;
 
-		req_stream << oss.str();
-		boost::asio::write(socket_, req_buf);
-
-		boost::asio::read(socket_, res_buf, boost::asio::transfer_at_least(1), error);
-		if (error)
+		mysqlhs_execute(mysqlhs_, oss.str().c_str());
+		if (mysqlhs_->result != MYSQL_HS_OK)
 		{
 			raw_data_ = "1\n";
 			return false;
 		}
 
 		clear();
-		oss << &res_buf;
-		raw_data_ = oss.str();
+		raw_data_ = mysqlhs_->data;;
 		raw_data_.pop_back(); // trim
 
 		return true;

@@ -1,4 +1,7 @@
 
+#ifndef mysqlhs_h
+#define mysqlhs_h
+
 #include <stdio.h>
 #include <string.h>
 
@@ -16,10 +19,14 @@
 #define MYSQL_HS_ERR_GET_ADDR_INFO_FAILED -3
 #define MYSQL_HS_ERR_CONNECTION_FAILED -4
 #define MYSQL_HS_ERR_QUERY_FAILED -5
-#define MYSQL_HS_ERR_MALLOC_FAILED -6
+#define MYSQL_HS_ERR_MEMORY_ALLOC_FAILED -6
 
 //#define MYSQL_HS_BUF_LEN 8 // for test
 #define MYSQL_HS_BUF_LEN 1024
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct
 {
@@ -33,7 +40,7 @@ typedef struct
 
 void _port2char(char* s, size_t n, const char* f, int p);
 
-void _wsa_start_up(mysqlhs_context* c);
+int _wsa_start_up();
 void _wsa_clean_up();
 void _close(mysqlhs_context* c, int do_close, int do_wsa_clean_up);
 
@@ -41,3 +48,9 @@ mysqlhs_context* mysqlhs_connect(const char* host, int port);
 void mysqlhs_close(mysqlhs_context* c);
 
 void mysqlhs_execute(mysqlhs_context* c, const char* query);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif // mysqlhs_h

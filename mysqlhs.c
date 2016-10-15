@@ -10,18 +10,18 @@ void _port2char(char* s, size_t n, const char* f, int p)
 #endif
 }
 
-void _wsa_start_up(mysqlhs_context* c)
+int _wsa_start_up()
 {
 #ifdef _WIN32
 	WSADATA wsaData;
-	if ((c->result = WSAStartup(MAKEWORD(2, 2), &wsaData)) != MYSQL_HS_OK)
+	int ret = WSAStartup(MAKEWORD(2, 2), &wsaData);
+	if (ret != MYSQL_HS_OK)
 	{
-		c->result = MYSQL_HS_ERR_WSA_START_UP_FAILED;
-		return;
+		return MYSQL_HS_ERR;
 	}
 #endif
 
-	c->result = MYSQL_HS_OK;
+	return MYSQL_HS_OK;
 }
 
 void _wsa_clean_up()
@@ -57,7 +57,7 @@ mysqlhs_context* mysqlhs_connect(const char* host, int port)
 {
 	mysqlhs_context* c;
 
-	char port_[6];
+	char port_[6]; // strlen("65535")
 	struct addrinfo hints, *addr_info, *p;
 
 	c = calloc(1, sizeof(mysqlhs_context));
@@ -70,12 +70,16 @@ mysqlhs_context* mysqlhs_connect(const char* host, int port)
 	c->sockfd = -1;
 	c->size = 0;
 	c->data = c->data = (char*)malloc((sizeof(char) * MYSQL_HS_BUF_LEN) + 1);
+	if (c->data == NULL)
+	{
+		c->result = MYSQL_HS_ERR_MEMORY_ALLOC_FAILED;
+		return c;
+	}
 
 	_port2char(port_, 6, "%d", port);
-
-	_wsa_start_up(c);
-	if (c->result != MYSQL_HS_OK)
+	if ((c->result = _wsa_start_up()) != MYSQL_HS_OK)
 	{
+		c->result = MYSQL_HS_ERR_WSA_START_UP_FAILED;
 		return c;
 	}
 
@@ -161,7 +165,7 @@ void mysqlhs_execute(mysqlhs_context* c, const char* query)
 			tmp = (char*)malloc((sizeof(char) * (c->size + MYSQL_HS_BUF_LEN)) + 1);
 			if (tmp == NULL)
 			{
-				c->result = MYSQL_HS_ERR_MALLOC_FAILED;
+				c->result = MYSQL_HS_ERR_MEMORY_ALLOC_FAILED;
 				return;
 			}
 			memcpy(tmp, c->data, c->size);

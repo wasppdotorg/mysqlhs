@@ -13,11 +13,13 @@ http://www.boost.org/LICENSE_1_0.txt
 #include <iostream>
 #include <vector>
 #include <string>
+#include <sstream>
 #include <unordered_map>
 
-#include <boost/asio.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
+
+#include "mysqlhs.h"
 
 namespace mysqlhs
 {
@@ -27,7 +29,7 @@ namespace mysqlhs
 	class connection
 	{
 	public:
-		connection(const std::string& host, const std::string& port);
+		connection(const std::string& host, int port);
 		~connection();
 
 		int new_index_id() { return ++index_id_; }
@@ -47,12 +49,7 @@ namespace mysqlhs
 		int affected_rows();
 
 	private:
-		boost::asio::io_service io_service_;
-		boost::asio::ip::tcp::socket socket_;
-		boost::system::error_code error;
-
-		boost::asio::streambuf req_buf, res_buf;
-		std::ostream req_stream, res_stream;
+		mysqlhs_context* mysqlhs_;
 
 		int index_id_;
 		query_type query_type_;
