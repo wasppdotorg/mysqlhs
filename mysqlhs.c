@@ -14,7 +14,7 @@ void _port2char(char* s, size_t n, const char* f, int p)
 #endif
 }
 
-int _wsa_start_up()
+int init_()
 {
 #ifdef _WIN32
 	WSADATA wsaData;
@@ -28,14 +28,7 @@ int _wsa_start_up()
 	return MYSQL_HS_OK;
 }
 
-void _wsa_clean_up()
-{
-#ifdef _WIN32
-	WSACleanup();
-#endif
-}
-
-void _close(mysqlhs_context* c, int do_close, int do_wsa_clean_up)
+void close_(mysqlhs_context* c, int do_close, int do_wsa_clean_up)
 {
 #ifndef _WIN32
 	if (do_close)
@@ -52,7 +45,7 @@ void _close(mysqlhs_context* c, int do_close, int do_wsa_clean_up)
 
 	if (do_wsa_clean_up)
 	{
-		_wsa_clean_up();
+		WSACleanup();
 	}
 #endif
 }
@@ -80,12 +73,13 @@ mysqlhs_context* mysqlhs_connect(const char* host, int port)
 		return c;
 	}
 
-	_port2char(port_, 6, "%d", port);
-	if ((c->result = _wsa_start_up()) != MYSQL_HS_OK)
+	if ((c->result = init_()) != MYSQL_HS_OK)
 	{
-		c->result = MYSQL_HS_ERR_WSA_START_UP_FAILED;
+		c->result = MYSQL_HS_ERR_INIT_FAILED;
 		return c;
 	}
+
+	_port2char(port_, 6, "%d", port);
 
 	memset(&hints, 0, sizeof(hints));
 	hints.ai_family = AF_UNSPEC;
@@ -93,7 +87,7 @@ mysqlhs_context* mysqlhs_connect(const char* host, int port)
 
 	if ((c->result = getaddrinfo(host, port_, &hints, &addr_info)) != MYSQL_HS_OK)
 	{
-		_close(c, 0, 1);
+		close_(c, 0, 1);
 
 		c->result = MYSQL_HS_ERR_GET_ADDR_INFO_FAILED;
 		return c;
@@ -108,7 +102,7 @@ mysqlhs_context* mysqlhs_connect(const char* host, int port)
 
 		if (connect(c->sockfd, p->ai_addr, p->ai_addrlen) == MYSQL_HS_ERR)
 		{
-			_close(c, 1, 0);
+			close_(c, 1, 0);
 			continue;
 		}
 
@@ -117,11 +111,13 @@ mysqlhs_context* mysqlhs_connect(const char* host, int port)
 
 	if (p == NULL)
 	{
-		_close(c, 0, 1);
+		close_(c, 0, 1);
 
 		c->result = MYSQL_HS_ERR_CONNECTION_FAILED;
 		return c;
 	}
+
+	freeaddrinfo(addr_info);
 
 	c->result = MYSQL_HS_OK;
 	return c;
@@ -136,7 +132,7 @@ void mysqlhs_close(mysqlhs_context* c)
 
 	if (c->sockfd > 0)
 	{
-		_close(c, 1, 1);
+		close_(c, 1, 1);
 	}
 
 	if (c->data != NULL)
@@ -155,7 +151,7 @@ void mysqlhs_execute(mysqlhs_context* c, const char* query)
 
 	if ((c->result = send(c->sockfd, query, strlen(query), 0)) == MYSQL_HS_ERR)
 	{
-		_close(c, 1, 1);
+		close_(c, 1, 1);
 
 		c->result = MYSQL_HS_ERR_QUERY_FAILED;
 		return;
@@ -165,7 +161,7 @@ void mysqlhs_execute(mysqlhs_context* c, const char* query)
 	{
 		if (c->size > 0)
 		{
-			// we used malloc, realloc is unstable sometimes.
+			// we use malloc, realloc is unstable sometimes.
 			tmp = (char*)malloc((sizeof(char) * (c->size + MYSQL_HS_BUF_LEN)) + 1);
 			if (tmp == NULL)
 			{
