@@ -1,3 +1,9 @@
+/*
+Copyright (c) 2016-present WASPP (waspp.org at gmail dot com)
+
+Distributed under the Boost Software License, Version 1.0.
+http://www.boost.org/LICENSE_1_0.txt
+*/
 
 #ifndef mysqlhs_h
 #define mysqlhs_h
