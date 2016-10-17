@@ -11,12 +11,12 @@ http://www.boost.org/LICENSE_1_0.txt
 
 #include "mysqlhs.h"
 
-void _port2char(char* s, size_t n, const char* f, int p)
+void port2char_(char* s, size_t n, const char* f, int i)
 {
 #ifndef _WIN32
-	snprintf(s, n, f, p);
+	snprintf(s, n, f, i);
 #else
-	sprintf_s(s, n, f, p);
+	sprintf_s(s, n, f, i);
 #endif
 }
 
@@ -85,7 +85,7 @@ mysqlhs_context* mysqlhs_connect(const char* host, int port)
 		return c;
 	}
 
-	_port2char(port_, 6, "%d", port);
+	port2char_(port_, 6, "%d", port);
 
 	memset(&hints, 0, sizeof(hints));
 	hints.ai_family = AF_UNSPEC;

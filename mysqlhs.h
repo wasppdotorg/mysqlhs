@@ -41,7 +41,7 @@ typedef struct
 
 } mysqlhs_context;
 
-void _port2char(char* s, size_t n, const char* f, int p);
+void port2char_(char* s, size_t n, const char* f, int i);
 
 int init_();
 void close_(mysqlhs_context* c, int do_close, int do_wsa_clean_up);
