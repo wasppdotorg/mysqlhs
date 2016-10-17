@@ -72,7 +72,7 @@ mysqlhs_context* mysqlhs_connect(const char* host, int port)
 	c->result = MYSQL_HS_ERR;
 	c->sockfd = -1;
 	c->size = 0;
-	c->data = c->data = (char*)malloc((sizeof(char) * MYSQL_HS_BUF_LEN) + 1);
+	c->data = (char*)malloc((sizeof(char) * MYSQL_HS_BUF_LEN) + 1);
 	if (c->data == NULL)
 	{
 		c->result = MYSQL_HS_ERR_MEMORY_ALLOC_FAILED;
