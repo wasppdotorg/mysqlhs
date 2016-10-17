@@ -1,4 +1,8 @@
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "mysqlhs.h"
 
 void _port2char(char* s, size_t n, const char* f, int p)

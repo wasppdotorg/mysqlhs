@@ -8,6 +8,8 @@
     <File Name="mysqlhs_connection.cpp"/>
     <File Name="mysqlhs_index.cpp"/>
     <File Name="mysqlhs_result.cpp"/>
+    <File Name="mysqlhs.c"/>
+    <File Name="mysqlhs.h"/>
   </VirtualDirectory>
   <Settings Type="Executable">
     <GlobalSettings>

@@ -2,9 +2,6 @@
 #ifndef mysqlhs_h
 #define mysqlhs_h
 
-#include <stdio.h>
-#include <string.h>
-
 #ifndef _WIN32
 #include <netdb.h> // addrinfo
 #include <unistd.h> // close
