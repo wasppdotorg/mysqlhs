@@ -43,8 +43,8 @@ namespace mysqlhs
 		}
 
 		clear();
+
 		raw_data_ = mysqlhs_->data;
-		//std::cout << "_" << raw_data_ << "_" << std::endl;
 		raw_data_.pop_back(); // trim
 
 		return true;

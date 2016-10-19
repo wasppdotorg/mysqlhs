@@ -148,14 +148,7 @@ void mysqlhs_execute(mysqlhs_context* c, const char* query)
 {
 	int recv_size = 0;
 	char buf[MYSQL_HS_BUF_LEN + 1];
-	char* reallocated;
-
-	if (c->data != NULL)
-	{
-		free(c->data);
-		c->size = 0;
-		c->data = NULL;
-	}
+	char* tmp;
 
 	if ((c->result = send(c->sockfd, query, strlen(query), 0)) == MYSQL_HS_ERR)
 	{
@@ -165,23 +158,29 @@ void mysqlhs_execute(mysqlhs_context* c, const char* query)
 		return;
 	}
 
+	if (c->data != NULL)
+	{
+		free(c->data);
+		c->data = NULL;
+		c->size = 0;
+	}
+
 	while ((recv_size = recv(c->sockfd, buf, MYSQL_HS_BUF_LEN, 0)) > 0)
 	{
-		if (c->size > 0)
+		// we use malloc, realloc is unstable sometimes.
+		tmp = (char*)malloc(sizeof(char) * (c->size + MYSQL_HS_BUF_LEN + 1));
+		if (tmp == NULL)
 		{
-			// we use malloc, realloc is unstable sometimes.
-			reallocated = (char*)malloc(sizeof(char) * (c->size + MYSQL_HS_BUF_LEN + 1));
-			if (reallocated == NULL)
-			{
-				c->result = MYSQL_HS_ERR_MEMORY_ALLOC_FAILED;
-				return;
-			}
-
-			memcpy(reallocated, c->data, c->size);
-			free(c->data);
-
-			c->data = reallocated;
+			c->result = MYSQL_HS_ERR_MEMORY_ALLOC_FAILED;
+			return;
 		}
+
+		if (c->data != NULL)
+		{
+			memcpy(tmp, c->data, c->size);
+			free(c->data);
+		}
+		c->data = tmp;
 
 		memcpy(c->data + c->size, buf, recv_size);
 		c->size += recv_size;
@@ -194,20 +193,4 @@ void mysqlhs_execute(mysqlhs_context* c, const char* query)
 	}
 
 	c->result = MYSQL_HS_OK;
-}
-
-int main()
-{
-	mysqlhs_context* c = mysqlhs_connect("127.0.0.1", 9999);
-	
-	mysqlhs_execute(c, "P	0	test	movie	PRIMARY	id,genre,title,view_count\n");
-	printf("%s", c->data);
-	
-	mysqlhs_execute(c, "0	>	1	0	0	10\n");
-	printf("%s", c->data);
-	
-	mysqlhs_close(c);
-
-	int a = getchar();
-	return 0;
 }
