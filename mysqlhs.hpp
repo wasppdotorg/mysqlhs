@@ -72,10 +72,10 @@ namespace mysqlhs
 	class index
 	{
 	public:
-		index(connection* conn, const std::string& db, const std::string& table, const std::string& index_name, const std::string& columns);
+		index(connection& conn, const std::string& db, const std::string& table, const std::string& index_name, const std::string& columns);
 		~index();
 
-		connection* conn() { return conn_; }
+		connection& conn() { return conn_; }
 		const std::vector<std::string>& columns() { return columns_; }
 
 		bool open();
@@ -85,10 +85,10 @@ namespace mysqlhs
 		template<typename T>
 		bool select_where_index(char condition, T value, int limit = 1, int offset = 0)
 		{
-			conn_->clear();
-			*conn_ << index_id_ << "\t" << condition << "\t1\t" << value << "\t" << limit << "\t" << offset << "\n";
+			conn_.clear();
+			conn_ << index_id_ << "\t" << condition << "\t1\t" << value << "\t" << limit << "\t" << offset << "\n";
 
-			if (!conn_->query(query_type::select_) || !conn_->is_okay())
+			if (!conn_.query(query_type::select_) || !conn_.is_okay())
 			{
 				return false;
 			}
@@ -105,10 +105,10 @@ namespace mysqlhs
 		template<typename T>
 		bool update_where_index(char condition, T value, const std::vector<std::string>& params)
 		{
-			conn_->clear();
-			*conn_ << index_id_ << "\t" << condition << "\t1\t" << value << "\t1\t0\tU\t" << boost::algorithm::join(params, "\t") << "\n";
+			conn_.clear();
+			conn_ << index_id_ << "\t" << condition << "\t1\t" << value << "\t1\t0\tU\t" << boost::algorithm::join(params, "\t") << "\n";
 
-			if (!conn_->query(query_type::update_) || !conn_->is_okay())
+			if (!conn_.query(query_type::update_) || !conn_.is_okay())
 			{
 				return false;
 			}
@@ -121,10 +121,10 @@ namespace mysqlhs
 		template<typename T>
 		bool delete_where_index(char condition, T value)
 		{
-			conn_->clear();
-			*conn_ << index_id_ << "\t" << condition << "\t1\t" << value << "\t1\t0\tD\n";
+			conn_.clear();
+			conn_ << index_id_ << "\t" << condition << "\t1\t" << value << "\t1\t0\tD\n";
 
-			if (!conn_->query(query_type::delete_) || !conn_->is_okay())
+			if (!conn_.query(query_type::delete_) || !conn_.is_okay())
 			{
 				return false;
 			}
@@ -133,7 +133,7 @@ namespace mysqlhs
 		}
 
 	private:
-		connection* conn_;
+		connection& conn_;
 		std::size_t index_id_;
 		std::vector<std::string> columns_;
 
@@ -142,7 +142,7 @@ namespace mysqlhs
 	class result
 	{
 	public:
-		result(index* idx);
+		result(index& idx);
 		~result();
 
 		std::size_t num_rows();

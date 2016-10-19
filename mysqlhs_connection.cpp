@@ -43,8 +43,9 @@ namespace mysqlhs
 		}
 
 		clear();
-		raw_data_ = mysqlhs_->data;;
-		raw_data_.pop_back(); // trim
+		raw_data_ = mysqlhs_->data;
+		std::cout << "_" << raw_data_ << "_" << std::endl;
+		//raw_data_.pop_back(); // trim
 
 		return true;
 	}
@@ -71,7 +72,8 @@ namespace mysqlhs
 			return -1;
 		}
 
-		return boost::lexical_cast<int>(raw_data_[raw_data_.size() - 1]);
+		auto found = raw_data_.find_last_of("\t");
+		return boost::lexical_cast<int>(raw_data_.substr(found + 1));
 	}
 
 } // namespace mysqlhs

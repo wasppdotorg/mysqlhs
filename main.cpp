@@ -17,7 +17,7 @@ int main()
 	try
 	{
 		mysqlhs::connection c("127.0.0.1", 9999);
-		mysqlhs::index movie(&c, "test", "movie", "PRIMARY", "id,genre,title,view_count");
+		mysqlhs::index movie(c, "test", "movie", "PRIMARY", "id,genre,title,view_count");
 
 		bool ret = movie.open();
 		if (!ret)
@@ -25,7 +25,7 @@ int main()
 			std::cout << "failed to open index" << std::endl;
 			return 1;
 		}
-
+/*
 		std::vector<std::string> insert_data;
 		//
 			insert_data.push_back("0");
@@ -42,7 +42,7 @@ int main()
 			}
 			std::cout << "insert : " << ret << std::endl;
 		}
-
+*/
 		ret = movie.select_where_index('>', 0, 10, 0);
 		if (!ret)
 		{
@@ -50,7 +50,7 @@ int main()
 		}
 		std::cout << "select : " << ret << std::endl;
 
-		mysqlhs::result rs(&movie);
+		mysqlhs::result rs(movie);
 		std::cout << "num_rows : " << rs.num_rows() << std::endl;
 
 		while (rs.fetch())
@@ -61,7 +61,7 @@ int main()
 			std::cout << rs.get<int>("view_count") << std::endl;
 			std::cout << std::endl;
 		}
-
+/*
 		std::vector<std::string> update_data;
 		//
 			update_data.push_back("11");
@@ -75,14 +75,15 @@ int main()
 		{
 			std::cout << "failed to update" << std::endl;
 		}
-		std::cout << "update : " << movie.conn()->affected_rows() << std::endl;
+		std::cout << "update : " << movie.conn().affected_rows() << std::endl;
 
 		ret = movie.delete_where_index('=', 9);
 		if (!ret)
 		{
 			std::cout << "failed to delete" << std::endl;
 		}
-		std::cout << "delete : " << movie.conn()->affected_rows() << std::endl;
+		std::cout << "delete : " << movie.conn().affected_rows() << std::endl;
+		 * */
 	}
 	catch (std::exception& e)
 	{

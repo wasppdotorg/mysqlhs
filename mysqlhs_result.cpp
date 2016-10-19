@@ -10,10 +10,10 @@ http://www.boost.org/LICENSE_1_0.txt
 namespace mysqlhs
 {
 
-	result::result(index* idx)
-		: i(2), columns_(idx->columns())
+	result::result(index& idx)
+		: i(2), columns_(idx.columns())
 	{
-		boost::split(data_, idx->conn()->raw_data(), boost::is_any_of("\t"));
+		boost::split(data_, idx.conn().raw_data(), boost::is_any_of("\t"));
 
 		for (auto& c : columns_)
 		{
