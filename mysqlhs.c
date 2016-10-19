@@ -158,6 +158,7 @@ void mysqlhs_execute(mysqlhs_context* c, const char* query)
 		return;
 	}
 
+	// clear
 	if (c->data != NULL)
 	{
 		free(c->data);
