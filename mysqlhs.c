@@ -72,12 +72,7 @@ mysqlhs_context* mysqlhs_connect(const char* host, int port)
 	c->result = MYSQL_HS_ERR;
 	c->sockfd = -1;
 	c->size = 0;
-	c->data = (char*)malloc(sizeof(char) * (MYSQL_HS_BUF_LEN + 1));
-	if (c->data == NULL)
-	{
-		c->result = MYSQL_HS_ERR_MEMORY_ALLOC_FAILED;
-		return c;
-	}
+	c->data = NULL;
 
 	if ((c->result = init_()) != MYSQL_HS_OK)
 	{
@@ -155,6 +150,13 @@ void mysqlhs_execute(mysqlhs_context* c, const char* query)
 	char buf[MYSQL_HS_BUF_LEN + 1];
 	char* reallocated;
 
+	if (c->data != NULL)
+	{
+		free(c->data);
+		c->size = 0;
+		c->data = NULL;
+	}
+
 	if ((c->result = send(c->sockfd, query, strlen(query), 0)) == MYSQL_HS_ERR)
 	{
 		close_(c, 1, 1);
@@ -174,8 +176,10 @@ void mysqlhs_execute(mysqlhs_context* c, const char* query)
 				c->result = MYSQL_HS_ERR_MEMORY_ALLOC_FAILED;
 				return;
 			}
+
 			memcpy(reallocated, c->data, c->size);
 			free(c->data);
+
 			c->data = reallocated;
 		}
 
@@ -190,4 +194,20 @@ void mysqlhs_execute(mysqlhs_context* c, const char* query)
 	}
 
 	c->result = MYSQL_HS_OK;
+}
+
+int main()
+{
+	mysqlhs_context* c = mysqlhs_connect("127.0.0.1", 9999);
+	
+	mysqlhs_execute(c, "P	0	test	movie	PRIMARY	id,genre,title,view_count\n");
+	printf("%s", c->data);
+	
+	mysqlhs_execute(c, "0	>	1	0	0	10\n");
+	printf("%s", c->data);
+	
+	mysqlhs_close(c);
+
+	int a = getchar();
+	return 0;
 }
