@@ -4,7 +4,8 @@ mysqlhs
 
 Build Environment
 -----------------
-* GCC 5.4 - Ubuntu 16.04 LTS (Boost 1.58)
+* GCC 5.4 - Ubuntu 16.04 LTS
+* Visual Studio 2015 - Windows 10
 
 Install MariaDB
 ---------------
@@ -61,10 +62,6 @@ handlersocket_port_wr = 9999
 * mysql -u root -p
 * SHOW PROCESSLIST;
 * exit
-
-Install Boost Libraries
------------------------
-* sudo apt-get install libboost-all-dev
 
 Install mysqlhs
 ---------------
