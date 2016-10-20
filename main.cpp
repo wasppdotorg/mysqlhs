@@ -14,6 +14,8 @@ http://www.boost.org/LICENSE_1_0.txt
 
 int main()
 {
+	//return test_();
+
 	try
 	{
 		mysqlhs::connection c("127.0.0.1", 9999);

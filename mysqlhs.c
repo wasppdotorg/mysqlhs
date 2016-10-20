@@ -196,3 +196,42 @@ void mysqlhs_execute(mysqlhs_context* c, const char* query)
 
 	c->result = MYSQL_HS_OK;
 }
+
+int test_()
+{
+	mysqlhs_context* c = mysqlhs_connect("127.0.0.1", 9999);
+	if (c->result)
+	{
+		printf("failed to connect");
+		return 1;
+	}
+
+	mysqlhs_execute(c, "P	0	test	movie	PRIMARY	id,genre,title,view_count\n");
+	if (c->result)
+	{
+		printf("failed to open");
+		return 1;
+	}
+	printf("%s", c->data);
+
+	mysqlhs_execute(c, "0	+	3	0	Sci-Fi	Star wars\n");
+	if (c->result)
+	{
+		printf("failed to insert");
+		return 1;
+	}
+	printf("%s", c->data);
+
+	mysqlhs_execute(c, "0	>	1	0	10	0\n");
+	if (c->result)
+	{
+		printf("failed to select");
+		return 1;
+	}
+	printf("%s", c->data);
+	
+	mysqlhs_close(c);
+	
+	int z = getchar();
+	return 0;
+}
