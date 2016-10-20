@@ -45,7 +45,7 @@ namespace mysqlhs
 		void split(const std::string &s, char c, std::vector<std::string>& v);
 
 		const std::string& raw_data();
-		int affected_rows();
+		uint64_t affected_rows();
 
 	private:
 		mysqlhs_context* mysqlhs_;

@@ -72,7 +72,7 @@ std::cout << "_" << oss.str() << "_" << std::endl;
 		return raw_data_;
 	}
 
-	int connection::affected_rows()
+	uint64_t connection::affected_rows()
 	{
 		if (query_type_ != query_type::update_ && query_type_ != query_type::delete_)
 		{
@@ -85,7 +85,7 @@ std::cout << "_" << oss.str() << "_" << std::endl;
 		}
 
 		auto found = raw_data_.find_last_of("\t");
-		return atoi(raw_data_.substr(found + 1).c_str());
+		return strtoull(raw_data_.substr(found + 1).c_str(), nullptr, 0);
 	}
 
 } // namespace mysqlhs
