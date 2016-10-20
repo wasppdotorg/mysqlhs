@@ -72,7 +72,7 @@ mysqlhs_context* mysqlhs_connect(const char* host, int port)
 	c->result = MYSQL_HS_ERR;
 	c->sockfd = -1;
 	c->size = 0;
-	c->data = (char*)malloc(sizeof(char) * MYSQL_HS_BUF_LEN);
+	c->data = (char*)malloc(sizeof(char) * (MYSQL_HS_BUF_LEN + 1));
 	if (c->data == NULL)
 	{
 		c->result = MYSQL_HS_ERR_MEMORY_ALLOC_FAILED;
@@ -152,7 +152,7 @@ void mysqlhs_close(mysqlhs_context* c)
 void mysqlhs_execute(mysqlhs_context* c, const char* query)
 {
 	int recv_size = 0;
-	char buf[MYSQL_HS_BUF_LEN];
+	char buf[MYSQL_HS_BUF_LEN + 1];
 	char* reallocated;
 
 	if ((c->result = send(c->sockfd, query, strlen(query), 0)) == MYSQL_HS_ERR)
@@ -172,7 +172,7 @@ void mysqlhs_execute(mysqlhs_context* c, const char* query)
 		if (c->size > 0)
 		{
 			// we use malloc, realloc is unstable sometimes.
-			reallocated = (char*)malloc(sizeof(char) * (c->size + MYSQL_HS_BUF_LEN));
+			reallocated = (char*)malloc(sizeof(char) * (c->size + MYSQL_HS_BUF_LEN + 1));
 			if (reallocated == NULL)
 			{
 				c->result = MYSQL_HS_ERR_MEMORY_ALLOC_FAILED;

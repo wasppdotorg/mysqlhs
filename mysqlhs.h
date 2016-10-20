@@ -24,7 +24,7 @@ http://www.boost.org/LICENSE_1_0.txt
 #define MYSQL_HS_ERR_QUERY_FAILED -5
 #define MYSQL_HS_ERR_MEMORY_ALLOC_FAILED -6
 
-#define MYSQL_HS_BUF_LEN 1024
+#define MYSQL_HS_BUF_LEN 1024 - 1
 
 #ifdef __cplusplus
 extern "C" {
