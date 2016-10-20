@@ -16,9 +16,6 @@ http://www.boost.org/LICENSE_1_0.txt
 #include <sstream>
 #include <unordered_map>
 
-#include <boost/algorithm/string.hpp>
-#include <boost/lexical_cast.hpp>
-
 #include "mysqlhs.h"
 
 namespace mysqlhs
@@ -44,6 +41,8 @@ namespace mysqlhs
 
 		bool query(query_type type_);
 		bool is_okay();
+
+		void split(const std::string &s, char c, std::vector<std::string>& v);
 
 		const std::string& raw_data();
 		int affected_rows();
@@ -106,7 +105,13 @@ namespace mysqlhs
 		bool update_where_index(char condition, T value, const std::vector<std::string>& params)
 		{
 			conn_.clear();
-			conn_ << index_id_ << "\t" << condition << "\t1\t" << value << "\t1\t0\tU\t" << boost::algorithm::join(params, "\t") << "\n";
+			conn_ << index_id_ << "\t" << condition << "\t1\t" << value << "\t1\t0\tU";
+
+			for (auto& p : params)
+			{
+				conn_ << "\t" << p;
+			}
+			conn_ << "\n";
 
 			if (!conn_.query(query_type::update_) || !conn_.is_okay())
 			{
@@ -149,23 +154,31 @@ namespace mysqlhs
 		bool fetch();
 
 		template<typename T>
-		T get(const std::string& name)
+		T get(const std::string& column)
 		{
-			T value = T();
-			if (!row_[name].empty())
-			{
-				value = boost::lexical_cast<T>(row_[name]);
-			}
+			T value;
+			set_value(column, value);
 
 			return value;
 		}
 
-		const std::string& get_str(const std::string& name)
-		{
-			return row_[name];
-		}
-
 	private:
+		void set_value(const std::string& column, uint8_t& value);
+
+		void set_value(const std::string& column, int16_t& value);
+		void set_value(const std::string& column, uint16_t& value);
+
+		void set_value(const std::string& column, int32_t& value);
+		void set_value(const std::string& column, uint32_t& value);
+
+		void set_value(const std::string& column, int64_t& value);
+		void set_value(const std::string& column, uint64_t& value);
+
+		void set_value(const std::string& column, float& value);
+		void set_value(const std::string& column, double& value);
+
+		void set_value(const std::string& column, std::string& value);
+
 		std::size_t i;
 		std::vector<std::string> data_;
 		const std::vector<std::string>& columns_;

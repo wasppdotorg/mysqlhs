@@ -25,7 +25,7 @@ int main()
 			std::cout << "failed to open index" << std::endl;
 			return 1;
 		}
-/*
+
 		std::vector<std::string> insert_data;
 		//
 			insert_data.push_back("0");
@@ -42,7 +42,7 @@ int main()
 			}
 			std::cout << "insert : " << ret << std::endl;
 		}
-*/
+
 		ret = movie.select_where_index('>', 0, 10, 0);
 		if (!ret)
 		{
@@ -55,13 +55,13 @@ int main()
 
 		while (rs.fetch())
 		{
-			std::cout << rs.get<int>("id") << std::endl;
-			std::cout << rs.get_str("genre") << std::endl;
-			std::cout << rs.get_str("title") << std::endl;
-			std::cout << rs.get<int>("view_count") << std::endl;
+			std::cout << rs.get<int32_t>("id") << std::endl;
+			std::cout << rs.get<std::string>("genre") << std::endl;
+			std::cout << rs.get<std::string>("title") << std::endl;
+			std::cout << rs.get<int32_t>("view_count") << std::endl;
 			std::cout << std::endl;
 		}
-/*
+
 		std::vector<std::string> update_data;
 		//
 			update_data.push_back("11");
@@ -83,7 +83,6 @@ int main()
 			std::cout << "failed to delete" << std::endl;
 		}
 		std::cout << "delete : " << movie.conn().affected_rows() << std::endl;
-		 * */
 	}
 	catch (std::exception& e)
 	{

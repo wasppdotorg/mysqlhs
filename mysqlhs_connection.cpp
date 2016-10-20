@@ -35,6 +35,7 @@ namespace mysqlhs
 	{
 		query_type_ = type_;
 
+std::cout << "_" << oss.str() << "_" << std::endl;
 		mysqlhs_execute(mysqlhs_, oss.str().c_str());
 		if (mysqlhs_->result != MYSQL_HS_OK)
 		{
@@ -43,9 +44,8 @@ namespace mysqlhs
 		}
 
 		clear();
-
 		raw_data_ = mysqlhs_->data;
-		raw_data_.pop_back(); // trim
+		std::cout << raw_data_ << std::endl;
 
 		return true;
 	}
@@ -53,6 +53,18 @@ namespace mysqlhs
 	bool connection::is_okay()
 	{
 		return (raw_data_[0] == '0');
+	}
+
+	void connection::split(const std::string &s, char c, std::vector<std::string>& v)
+	{
+		std::stringstream ss;
+		ss.str(s);
+
+		std::string item;
+		while (std::getline(ss, item, c))
+		{
+			v.push_back(item);
+		}
 	}
 
 	const std::string& connection::raw_data()
@@ -73,7 +85,7 @@ namespace mysqlhs
 		}
 
 		auto found = raw_data_.find_last_of("\t");
-		return boost::lexical_cast<int>(raw_data_.substr(found + 1));
+		return atoi(raw_data_.substr(found + 1).c_str());
 	}
 
 } // namespace mysqlhs

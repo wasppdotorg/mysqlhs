@@ -5,7 +5,9 @@ Distributed under the Boost Software License, Version 1.0.
 http://www.boost.org/LICENSE_1_0.txt
 */
 
-#include <boost/algorithm/string/join.hpp>
+#include <sstream>
+#include <algorithm>
+#include <iterator>
 
 #include "mysqlhs.hpp"
 
@@ -18,7 +20,7 @@ namespace mysqlhs
 		conn_.clear();
 		conn_ << "P\t" << index_id_ << "\t" << db << "\t" << table << "\t" << index_name << "\t" << columns << "\n";
 
-		boost::split(columns_, columns, boost::is_any_of(","));
+		conn_.split(columns, ',', columns_);
 	}
 
 	index::~index()
@@ -39,7 +41,13 @@ namespace mysqlhs
 	bool index::insert(const std::vector<std::string>& params)
 	{
 		conn_.clear();
-		conn_ << index_id_ << "\t+\t" << params.size() << "\t" << boost::algorithm::join(params, "\t") << "\n";
+		conn_ << index_id_ << "\t+\t" << params.size();
+
+		for (auto& p : params)
+		{
+			conn_ << "\t" << p;
+		}
+		conn_ << "\n";
 
 		if (!conn_.query(query_type::insert_) || !conn_.is_okay())
 		{

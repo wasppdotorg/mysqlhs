@@ -24,8 +24,7 @@ http://www.boost.org/LICENSE_1_0.txt
 #define MYSQL_HS_ERR_QUERY_FAILED -5
 #define MYSQL_HS_ERR_MEMORY_ALLOC_FAILED -6
 
-//#define MYSQL_HS_BUF_LEN 7 - 1 // for test
-#define MYSQL_HS_BUF_LEN 1024 - 1
+#define MYSQL_HS_BUF_LEN 1024
 
 #ifdef __cplusplus
 extern "C" {
@@ -50,6 +49,8 @@ mysqlhs_context* mysqlhs_connect(const char* host, int port);
 void mysqlhs_close(mysqlhs_context* c);
 
 void mysqlhs_execute(mysqlhs_context* c, const char* query);
+
+int test_();
 
 #ifdef __cplusplus
 }

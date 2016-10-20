@@ -5,6 +5,10 @@ Distributed under the Boost Software License, Version 1.0.
 http://www.boost.org/LICENSE_1_0.txt
 */
 
+#include <sstream>
+#include <algorithm>
+#include <iterator>
+
 #include "mysqlhs.hpp"
 
 namespace mysqlhs
@@ -13,7 +17,7 @@ namespace mysqlhs
 	result::result(index& idx)
 		: i(2), columns_(idx.columns())
 	{
-		boost::split(data_, idx.conn().raw_data(), boost::is_any_of("\t"));
+		idx.conn().split(idx.conn().raw_data(), '\t', data_);
 
 		for (auto& c : columns_)
 		{
@@ -44,6 +48,56 @@ namespace mysqlhs
 		}
 
 		return true;
+	}
+	
+	void result::set_value(const std::string& column, uint8_t& value)
+	{
+		value = atoi(row_[column].c_str());
+	}
+
+	void result::set_value(const std::string& column, int16_t& value)
+	{
+		value = atoi(row_[column].c_str());
+	}
+
+	void result::set_value(const std::string& column, uint16_t& value)
+	{
+		value = atoi(row_[column].c_str());
+	}
+
+	void result::set_value(const std::string& column, int32_t& value)
+	{
+		value = strtol(row_[column].c_str(), nullptr, 0);
+	}
+
+	void result::set_value(const std::string& column, uint32_t& value)
+	{
+		value = strtoul(row_[column].c_str(), nullptr, 0);
+	}
+
+	void result::set_value(const std::string& column, int64_t& value)
+	{
+		value = strtoll(row_[column].c_str(), nullptr, 0);
+	}
+
+	void result::set_value(const std::string& column, uint64_t& value)
+	{
+		value = strtoull(row_[column].c_str(), nullptr, 0);
+	}
+
+	void result::set_value(const std::string& column, float& value)
+	{
+		value = strtof(row_[column].c_str(), nullptr);
+	}
+
+	void result::set_value(const std::string& column, double& value)
+	{
+		value = strtod(row_[column].c_str(), nullptr);
+	}
+
+	void result::set_value(const std::string& column, std::string& value)
+	{
+		value = row_[column];
 	}
 
 } // namespace mysqlhs
