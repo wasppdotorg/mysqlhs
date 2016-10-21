@@ -35,7 +35,6 @@ namespace mysqlhs
 	{
 		query_type_ = type_;
 
-std::cout << "_" << oss.str() << "_" << std::endl;
 		mysqlhs_execute(mysqlhs_, oss.str().c_str());
 		if (mysqlhs_->result != MYSQL_HS_OK)
 		{
@@ -45,7 +44,6 @@ std::cout << "_" << oss.str() << "_" << std::endl;
 
 		clear();
 		raw_data_ = mysqlhs_->data;
-		std::cout << raw_data_ << std::endl;
 
 		return true;
 	}
