@@ -50,19 +50,24 @@ namespace mysqlhs
 		return true;
 	}
 	
+	void result::set_value(const std::string& column, int8_t& value)
+	{
+		value = static_cast<int8_t>(*const_cast<char*>(row_[column].c_str()));
+	}
+	
 	void result::set_value(const std::string& column, uint8_t& value)
 	{
-		value = atoi(row_[column].c_str());
+		value = static_cast<uint8_t>(*const_cast<char*>(row_[column].c_str()));
 	}
 
 	void result::set_value(const std::string& column, int16_t& value)
 	{
-		value = atoi(row_[column].c_str());
+		value = static_cast<int16_t>(*const_cast<char*>(row_[column].c_str()));
 	}
 
 	void result::set_value(const std::string& column, uint16_t& value)
 	{
-		value = atoi(row_[column].c_str());
+		value = static_cast<uint16_t>(*const_cast<char*>(row_[column].c_str()));
 	}
 
 	void result::set_value(const std::string& column, int32_t& value)

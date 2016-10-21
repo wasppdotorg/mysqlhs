@@ -163,6 +163,7 @@ namespace mysqlhs
 		}
 
 	private:
+		void set_value(const std::string& column, int8_t& value);
 		void set_value(const std::string& column, uint8_t& value);
 
 		void set_value(const std::string& column, int16_t& value);
