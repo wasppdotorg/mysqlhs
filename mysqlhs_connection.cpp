@@ -53,7 +53,7 @@ namespace mysqlhs
 		return (raw_data_[0] == '0');
 	}
 
-	void connection::split(const std::string &s, char c, std::vector<std::string>& v)
+	void connection::split(const std::string& s, char c, std::vector<std::string>& v)
 	{
 		std::stringstream ss;
 		ss.str(s);

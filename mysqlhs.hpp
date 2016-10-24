@@ -42,7 +42,7 @@ namespace mysqlhs
 		bool query(query_type type_);
 		bool is_okay();
 
-		void split(const std::string &s, char c, std::vector<std::string>& v);
+		void split(const std::string& s, char c, std::vector<std::string>& v);
 
 		const std::string& raw_data();
 		uint64_t affected_rows();
