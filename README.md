@@ -17,9 +17,9 @@ deb [arch=amd64,i386] http://ftp.kaist.ac.kr/mariadb/repo/10.1/ubuntu xenial mai
 deb-src http://ftp.kaist.ac.kr/mariadb/repo/10.1/ubuntu xenial main
 ```
 
-* sudo apt-get update
-* sudo apt-get upgrade
-* sudo apt-get install mariadb-server
+* sudo apt update
+* sudo apt upgrade
+* sudo apt install mariadb-server
 * sudo /etc/init.d/mysql restart
 
 <!--
@@ -65,11 +65,11 @@ handlersocket_port_wr = 9999
 
 Install mysqlhs
 ---------------
-* sudo apt-get install git
+* sudo apt install git
 * git clone https://github.com/wasppdotorg/mysqlhs.git
 * cd mysqhs
-* sudo apt-get install build-essential
-* sudo apt-get install cmake
+* sudo apt install build-essential
+* sudo apt install cmake
 * mkdir cmake_build
 * cd cmake_build
 * cmake ..
@@ -81,7 +81,7 @@ Run
 
 Memory Leak Check
 -----------------
-* sudo apt-get install valgrind
+* sudo apt install valgrind
 * valgrind ./mysqlhs
 
 For FreeBSD
