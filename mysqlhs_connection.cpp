@@ -70,7 +70,7 @@ namespace mysqlhs
 		return raw_data_;
 	}
 
-	uint64_t connection::affected_rows()
+	int64_t connection::affected_rows()
 	{
 		if (query_type_ != query_type::update_ && query_type_ != query_type::delete_)
 		{
@@ -83,7 +83,7 @@ namespace mysqlhs
 		}
 
 		auto found = raw_data_.find_last_of("\t");
-		return strtoull(raw_data_.substr(found + 1).c_str(), nullptr, 0);
+		return strtoll(raw_data_.substr(found + 1).c_str(), nullptr, 0);
 	}
 
 } // namespace mysqlhs
