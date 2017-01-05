@@ -13,10 +13,10 @@ http://www.boost.org/LICENSE_1_0.txt
 
 void port2char_(char* s, size_t n, const char* f, int i)
 {
-#ifndef _WIN32
-	snprintf(s, n, f, i);
-#else
+#ifdef _WIN32
 	sprintf_s(s, n, f, i);
+#else
+	snprintf(s, n, f, i);
 #endif
 }
 
@@ -36,13 +36,7 @@ int init_()
 
 void close_(mysqlhs_context* c, int do_close, int do_wsa_clean_up)
 {
-#ifndef _WIN32
-	if (do_close)
-	{
-		close(c->sockfd);
-		c->sockfd = -1;
-	}
-#else
+#ifdef _WIN32
 	if (do_close)
 	{
 		closesocket(c->sockfd);
@@ -52,6 +46,12 @@ void close_(mysqlhs_context* c, int do_close, int do_wsa_clean_up)
 	if (do_wsa_clean_up)
 	{
 		WSACleanup();
+	}
+#else
+	if (do_close)
+	{
+		close(c->sockfd);
+		c->sockfd = -1;
 	}
 #endif
 }

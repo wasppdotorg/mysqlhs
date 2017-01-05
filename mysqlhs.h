@@ -8,12 +8,12 @@ http://www.boost.org/LICENSE_1_0.txt
 #ifndef mysqlhs_h
 #define mysqlhs_h
 
-#ifndef _WIN32
-#include <netdb.h> // addrinfo
-#include <unistd.h> // close
-#else
+#ifdef _WIN32
 #include <WinSock2.h>
 #include <WS2tcpip.h>
+#else
+#include <netdb.h> // addrinfo
+#include <unistd.h> // close
 #endif
 
 #define MYSQL_HS_OK 0
