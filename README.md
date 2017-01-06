@@ -38,6 +38,7 @@ quit;
 * mysql -u root -p
 ```
 create database test default character set utf8 default collate utf8_general_ci;
+use test;
 create table movie (id int not null auto_increment primary key, genre varchar(20) not null, title varchar(100) not null, view_count int default 0, key(genre)) engine innodb;
 grant all privileges on test.* to 'dbuser'@'localhost' identified by 'passwd' with grant option;
 flush privileges;
