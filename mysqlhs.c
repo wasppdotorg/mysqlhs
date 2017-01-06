@@ -11,59 +11,27 @@ http://www.boost.org/LICENSE_1_0.txt
 
 #include "mysqlhs.h"
 
+#ifdef _WIN32
+#define snprintf sprintf_s
+#define close closesocket
+#endif
+
 void port2char_(char* s, size_t n, const char* f, int i)
 {
-#ifdef _WIN32
-	sprintf_s(s, n, f, i);
-#else
 	snprintf(s, n, f, i);
-#endif
 }
 
-int init_()
+mysqlhs_context* init_()
 {
 #ifdef _WIN32
 	WSADATA wsaData;
-	int ret = WSAStartup(MAKEWORD(2, 2), &wsaData);
-	if (ret != MYSQL_HS_OK)
+	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != NO_ERROR)
 	{
-		return MYSQL_HS_ERR;
+		return NULL;
 	}
 #endif
 
-	return MYSQL_HS_OK;
-}
-
-void close_(mysqlhs_context* c, int do_close, int do_wsa_clean_up)
-{
-#ifdef _WIN32
-	if (do_close)
-	{
-		closesocket(c->sockfd);
-		c->sockfd = -1;
-	}
-
-	if (do_wsa_clean_up)
-	{
-		WSACleanup();
-	}
-#else
-	if (do_close)
-	{
-		close(c->sockfd);
-		c->sockfd = -1;
-	}
-#endif
-}
-
-mysqlhs_context* mysqlhs_connect(const char* host, int port)
-{
-	mysqlhs_context* c;
-
-	char port_[6]; // strlen("65535")
-	struct addrinfo hints, *addr_info, *p;
-
-	c = calloc(1, sizeof(mysqlhs_context));
+	mysqlhs_context* c = calloc(1, sizeof(mysqlhs_context));
 	if (c == NULL)
 	{
 		return NULL;
@@ -75,14 +43,29 @@ mysqlhs_context* mysqlhs_connect(const char* host, int port)
 	c->data = (char*)malloc(sizeof(char) * (MYSQL_HS_BUF_LEN + 1));
 	if (c->data == NULL)
 	{
-		c->result = MYSQL_HS_ERR_MEMORY_ALLOC_FAILED;
-		return c;
+		free(c);
+		return NULL;
 	}
 
-	if ((c->result = init_()) != MYSQL_HS_OK)
+	return c;
+}
+
+void close_(mysqlhs_context* c)
+{
+	close(c->sockfd);
+	c->sockfd = -1;
+}
+
+mysqlhs_context* mysqlhs_connect(const char* host, int port)
+{
+	mysqlhs_context* c;
+	char port_[6]; // strlen("65535")
+	struct addrinfo hints, *addr_info, *p;
+
+	c = init_();
+	if (c == NULL)
 	{
-		c->result = MYSQL_HS_ERR_INIT_FAILED;
-		return c;
+		return NULL;
 	}
 
 	port2char_(port_, 6, "%d", port);
@@ -93,8 +76,6 @@ mysqlhs_context* mysqlhs_connect(const char* host, int port)
 
 	if ((c->result = getaddrinfo(host, port_, &hints, &addr_info)) != MYSQL_HS_OK)
 	{
-		close_(c, 0, 1);
-
 		c->result = MYSQL_HS_ERR_GET_ADDR_INFO_FAILED;
 		return c;
 	}
@@ -108,7 +89,7 @@ mysqlhs_context* mysqlhs_connect(const char* host, int port)
 
 		if (connect(c->sockfd, p->ai_addr, p->ai_addrlen) == MYSQL_HS_ERR)
 		{
-			close_(c, 1, 0);
+			close_(c);
 			continue;
 		}
 
@@ -117,8 +98,6 @@ mysqlhs_context* mysqlhs_connect(const char* host, int port)
 
 	if (p == NULL)
 	{
-		close_(c, 0, 1);
-
 		c->result = MYSQL_HS_ERR_CONNECTION_FAILED;
 		return c;
 	}
@@ -138,7 +117,7 @@ void mysqlhs_close(mysqlhs_context* c)
 
 	if (c->sockfd > 0)
 	{
-		close_(c, 1, 1);
+		close_(c);
 	}
 
 	if (c->data != NULL)
@@ -147,6 +126,10 @@ void mysqlhs_close(mysqlhs_context* c)
 	}
 
 	free(c);
+	
+#ifdef _WIN32
+	WSACleanup();
+#endif
 }
 
 void mysqlhs_execute(mysqlhs_context* c, const char* query)
@@ -157,8 +140,6 @@ void mysqlhs_execute(mysqlhs_context* c, const char* query)
 
 	if ((c->result = send(c->sockfd, query, strlen(query), 0)) == MYSQL_HS_ERR)
 	{
-		close_(c, 1, 1);
-
 		c->result = MYSQL_HS_ERR_QUERY_FAILED;
 		return;
 	}
@@ -200,14 +181,14 @@ void mysqlhs_execute(mysqlhs_context* c, const char* query)
 int test_()
 {
 	mysqlhs_context* c = mysqlhs_connect("127.0.0.1", 9999);
-	if (c->result)
+	if (c == NULL || c->result != MYSQL_HS_OK)
 	{
 		printf("failed to connect");
 		return 1;
 	}
 
 	mysqlhs_execute(c, "P	0	test	movie	PRIMARY	id,genre,title,view_count\n");
-	if (c->result)
+	if (c->result != MYSQL_HS_OK)
 	{
 		printf("failed to open");
 		return 1;
@@ -215,7 +196,7 @@ int test_()
 	printf("%s", c->data);
 
 	mysqlhs_execute(c, "0	+	3	0	Sci-Fi	Star wars\n");
-	if (c->result)
+	if (c->result != MYSQL_HS_OK)
 	{
 		printf("failed to insert");
 		return 1;
@@ -223,7 +204,7 @@ int test_()
 	printf("%s", c->data);
 
 	mysqlhs_execute(c, "0	>	1	0	10	0\n");
-	if (c->result)
+	if (c->result != MYSQL_HS_OK)
 	{
 		printf("failed to select");
 		return 1;

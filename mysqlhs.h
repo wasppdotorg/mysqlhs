@@ -18,11 +18,10 @@ http://www.boost.org/LICENSE_1_0.txt
 
 #define MYSQL_HS_OK 0
 #define MYSQL_HS_ERR -1
-#define MYSQL_HS_ERR_INIT_FAILED -2
-#define MYSQL_HS_ERR_GET_ADDR_INFO_FAILED -3
-#define MYSQL_HS_ERR_CONNECTION_FAILED -4
-#define MYSQL_HS_ERR_QUERY_FAILED -5
-#define MYSQL_HS_ERR_MEMORY_ALLOC_FAILED -6
+#define MYSQL_HS_ERR_GET_ADDR_INFO_FAILED -2
+#define MYSQL_HS_ERR_CONNECTION_FAILED -3
+#define MYSQL_HS_ERR_QUERY_FAILED -4
+#define MYSQL_HS_ERR_MEMORY_ALLOC_FAILED -5
 
 #define MYSQL_HS_BUF_LEN 1024 - 1
 
@@ -42,8 +41,8 @@ typedef struct
 
 void port2char_(char* s, size_t n, const char* f, int i);
 
-int init_();
-void close_(mysqlhs_context* c, int do_close, int do_wsa_clean_up);
+mysqlhs_context* init_();
+void close_(mysqlhs_context* c);
 
 mysqlhs_context* mysqlhs_connect(const char* host, int port);
 void mysqlhs_close(mysqlhs_context* c);
