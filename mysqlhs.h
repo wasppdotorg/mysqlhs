@@ -8,7 +8,7 @@ http://www.boost.org/LICENSE_1_0.txt
 #ifndef mysqlhs_h
 #define mysqlhs_h
 
-#ifdef _WIN32
+#ifdef _MSC_VER
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 #else

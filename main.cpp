@@ -24,7 +24,7 @@ int main()
 		bool ret = movie.open();
 		if (!ret)
 		{
-			std::cout << "failed to open index" << std::endl;
+			std::cout << "failed to open index\n";
 			return 1;
 		}
 
@@ -40,28 +40,28 @@ int main()
 			ret = movie.insert(insert_data);
 			if (!ret)
 			{
-				std::cout << "failed to insert" << std::endl;
+				std::cout << "failed to insert\n";
 			}
-			std::cout << "insert : " << ret << std::endl;
+			std::cout << "insert : " << ret << "\n";
 		}
 
 		ret = movie.select_where_index('>', 0, 10, 0);
 		if (!ret)
 		{
-			std::cout << "failed to select" << std::endl;
+			std::cout << "failed to select" << "\n";
 		}
-		std::cout << "select : " << ret << std::endl;
+		std::cout << "select : " << ret << "\n";
 
 		mysqlhs::result rs(movie);
-		std::cout << "num_rows : " << rs.num_rows() << std::endl;
+		std::cout << "num_rows : " << rs.num_rows() << "\n";
 
 		while (rs.fetch())
 		{
-			std::cout << rs.get<int32_t>("id") << std::endl;
-			std::cout << rs.get<std::string>("genre") << std::endl;
-			std::cout << rs.get<std::string>("title") << std::endl;
-			std::cout << rs.get<int32_t>("view_count") << std::endl;
-			std::cout << std::endl;
+			std::cout << rs.get<int32_t>("id") << "\n";
+			std::cout << rs.get<std::string>("genre") << "\n";
+			std::cout << rs.get<std::string>("title") << "\n";
+			std::cout << rs.get<int32_t>("view_count") << "\n";
+			std::cout << "\n";
 		}
 
 		std::vector<std::string> update_data;
@@ -75,20 +75,20 @@ int main()
 		ret = movie.update_where_index('=', 10, update_data);
 		if (!ret)
 		{
-			std::cout << "failed to update" << std::endl;
+			std::cout << "failed to update" << "\n";
 		}
-		std::cout << "update : " << movie.conn().affected_rows() << std::endl;
+		std::cout << "update : " << movie.conn().affected_rows() << "\n";
 
 		ret = movie.delete_where_index('=', 9);
 		if (!ret)
 		{
-			std::cout << "failed to delete" << std::endl;
+			std::cout << "failed to delete\n";
 		}
-		std::cout << "delete : " << movie.conn().affected_rows() << std::endl;
+		std::cout << "delete : " << movie.conn().affected_rows() << "\n";
 	}
 	catch (std::exception& e)
 	{
-		std::cout << e.what() << std::endl;
+		std::cerr << e.what() << std::endl;
 	}
 
 	std::cin.get();

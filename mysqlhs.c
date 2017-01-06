@@ -11,7 +11,7 @@ http://www.boost.org/LICENSE_1_0.txt
 
 #include "mysqlhs.h"
 
-#ifdef _WIN32
+#ifdef _MSC_VER
 #define snprintf sprintf_s
 #define close closesocket
 #endif
@@ -22,7 +22,7 @@ mysqlhs_context* mysqlhs_connect(const char* host, int port)
 	char port_[6]; // strlen("65535")
 	struct addrinfo hints, *addr_info, *p;
 
-#ifdef _WIN32
+#ifdef _MSC_VER
 	WSADATA wsaData;
 	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != NO_ERROR)
 	{
@@ -153,7 +153,7 @@ void mysqlhs_close(mysqlhs_context* c)
 
 	free(c);
 	
-#ifdef _WIN32
+#ifdef _MSC_VER
 	WSACleanup();
 #endif
 }
