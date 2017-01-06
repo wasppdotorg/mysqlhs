@@ -14,7 +14,7 @@ namespace mysqlhs
 		: index_id_(-1), query_type_(query_type::none_)
 	{
 		mysqlhs_ = mysqlhs_connect(host.c_str(), port);
-		if (mysqlhs_ == NULL || mysqlhs_->result != MYSQL_HS_OK)
+		if (mysqlhs_ == NULL)
 		{
 			throw std::runtime_error("mysqlhs_connect failed");
 		}
