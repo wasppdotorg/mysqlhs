@@ -47,7 +47,7 @@ exit
 
 Install HandlerSocket
 ---------------------
-* sudo nano /etc/mysql/conf.d/my.cnf
+* sudo nano /etc/mysql/conf.d/mysql.cnf
 ```
 [mysqld]
 ..
