@@ -16,19 +16,24 @@ http://www.boost.org/LICENSE_1_0.txt
 #define close closesocket
 #endif
 
+int mysqlhs_init()
+{
+#ifdef _MSC_VER
+	WSADATA wsaData;
+	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != NO_ERROR)
+	{
+		return MYSQL_HS_ERR_INIT_FAILED;
+	}
+#endif
+
+	return MYSQL_HS_OK;
+}
+
 mysqlhs_context* mysqlhs_connect(const char* host, int port)
 {
 	mysqlhs_context* c;
 	char port_[6]; // strlen("65535")
 	struct addrinfo hints, *addr_info, *p;
-
-#ifdef _MSC_VER
-	WSADATA wsaData;
-	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != NO_ERROR)
-	{
-		return NULL;
-	}
-#endif
 
 	c = calloc(1, sizeof(mysqlhs_context));
 	if (c == NULL)
@@ -111,7 +116,7 @@ void mysqlhs_execute(mysqlhs_context* c, const char* query)
 			reallocated = (char*)malloc(sizeof(char) * (c->size + MYSQL_HS_BUF_LEN + 1));
 			if (reallocated == NULL)
 			{
-				c->result = MYSQL_HS_ERR_MEMORY_ALLOC_FAILED;
+				c->result = MYSQL_HS_ERR_MALLOC_FAILED;
 				return;
 			}
 
@@ -152,7 +157,10 @@ void mysqlhs_close(mysqlhs_context* c)
 	}
 
 	free(c);
-	
+}
+
+void mysqlhs_end()
+{
 #ifdef _MSC_VER
 	WSACleanup();
 #endif
@@ -160,6 +168,9 @@ void mysqlhs_close(mysqlhs_context* c)
 
 int test_()
 {
+	mysqlhs_init();
+	atexit(mysqlhs_end);
+
 	mysqlhs_context* c = mysqlhs_connect("127.0.0.1", 9999);
 	if (c == NULL)
 	{

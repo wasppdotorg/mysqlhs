@@ -18,6 +18,9 @@ int main()
 
 	try
 	{
+		mysqlhs_init();
+		atexit(mysqlhs_end);
+
 		mysqlhs::connection c("127.0.0.1", 9999);
 		mysqlhs::index movie(c, "test", "movie", "PRIMARY", "id,genre,title,view_count");
 

@@ -18,8 +18,9 @@ http://www.boost.org/LICENSE_1_0.txt
 
 #define MYSQL_HS_OK 0
 #define MYSQL_HS_ERR -1
-#define MYSQL_HS_ERR_QUERY_FAILED -2
-#define MYSQL_HS_ERR_MEMORY_ALLOC_FAILED -3
+#define MYSQL_HS_ERR_INIT_FAILED -2
+#define MYSQL_HS_ERR_QUERY_FAILED -3
+#define MYSQL_HS_ERR_MALLOC_FAILED -4
 
 #define MYSQL_HS_BUF_LEN 1024 - 1
 
@@ -37,9 +38,11 @@ typedef struct
 
 } mysqlhs_context;
 
+int mysqlhs_init();
 mysqlhs_context* mysqlhs_connect(const char* host, int port);
 void mysqlhs_execute(mysqlhs_context* c, const char* query);
 void mysqlhs_close(mysqlhs_context* c);
+void mysqlhs_end();
 
 int test_();
 
